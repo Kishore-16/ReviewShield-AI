@@ -19,8 +19,9 @@ DEFAULT_MODEL_PATH = Path(__file__).resolve().parent.parent / "models" / "detect
 class ReviewDetectorPredictor:
     """Predictor class loading trained model checkpoint for fast inference."""
 
-    def __init__(self, model_path: Path = DEFAULT_MODEL_PATH):
+    def __init__(self, model_path: Path = DEFAULT_MODEL_PATH, threshold: float = 98.00):
         self.model_path = Path(model_path)
+        self.threshold = float(threshold)
         if not self.model_path.exists():
             raise FileNotFoundError(
                 f"[X] Model checkpoint not found at '{self.model_path}'. "
@@ -33,9 +34,9 @@ class ReviewDetectorPredictor:
 
     def predict(self, text: str) -> dict:
         """
-        Predicts label and confidence based on 95.00% OR Probability threshold rule:
-        - OR Probability >= 95.00% => OR (Human Review), Confidence = OR Probability
-        - OR Probability < 95.00%  => CG (Computer-Generated / AI-Fake), Confidence = 100 - OR Probability
+        Predicts label and confidence based on configurable OR Probability threshold rule:
+        - OR Probability >= threshold => OR (Human Review), Confidence = OR Probability
+        - OR Probability < threshold  => CG (Computer-Generated / AI-Fake), Confidence = 100 - OR Probability
         """
         X_feat = self.union.transform([text])
         probs = self.model.predict_proba(X_feat)[0]
@@ -43,8 +44,8 @@ class ReviewDetectorPredictor:
         cg_prob = float(probs[1]) * 100
         or_prob = float(probs[0]) * 100
         
-        # 95.00% OR Probability Threshold Rule
-        if or_prob >= 95.00:
+        # Configurable OR Probability Threshold Rule (default 98.00%)
+        if or_prob >= self.threshold:
             pred_class = 0
             label_name = "OR (Human Review)"
             confidence = or_prob
@@ -52,14 +53,15 @@ class ReviewDetectorPredictor:
             pred_class = 1
             label_name = "CG (Computer-Generated / AI-Fake)"
             confidence = 100.0 - or_prob
-        
+
         return {
             'text': text,
             'prediction': pred_class,
             'label': label_name,
             'confidence': confidence,
             'cg_probability': cg_prob,
-            'or_probability': or_prob
+            'or_probability': or_prob,
+            'threshold': self.threshold
         }
 
     def display_prediction(self, text: str):

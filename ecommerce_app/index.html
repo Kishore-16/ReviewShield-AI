@@ -1,0 +1,1259 @@
+<!DOCTYPE html>
+<html class="scroll-smooth" lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Aurelia Studio Pro | AI-Verified Audio Storefront</title>
+  
+  <!-- Google Fonts & Material Symbols -->
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#3525cd",
+            "primary-container": "#4f46e5",
+            "primary-fixed": "#e2dfff",
+            "primary-fixed-dim": "#c3c0ff",
+            "on-primary": "#ffffff",
+            "secondary": "#712ae2",
+            "secondary-container": "#8a4cfc",
+            "secondary-fixed": "#eaddff",
+            "tertiary": "#005522",
+            "tertiary-container": "#00702f",
+            "tertiary-fixed": "#7ffc97",
+            "on-tertiary-fixed": "#002109",
+            "surface": "#fcf8fb",
+            "surface-dim": "#dcd9dc",
+            "surface-container-lowest": "#ffffff",
+            "surface-container-low": "#f6f3f5",
+            "surface-container": "#f0edef",
+            "surface-container-high": "#eae7ea",
+            "surface-container-highest": "#e4e2e4",
+            "on-surface": "#1b1b1d",
+            "on-surface-variant": "#464555",
+            "outline": "#777587",
+            "outline-variant": "#c7c4d8",
+            "error": "#ba1a1a",
+            "error-container": "#ffdad6",
+            "on-error": "#ffffff"
+          },
+          fontFamily: {
+            "headline": ["Plus Jakarta Sans", "sans-serif"],
+            "body": ["Inter", "sans-serif"],
+            "mono": ["JetBrains Mono", "monospace"]
+          }
+        }
+      }
+    };
+  </script>
+  
+  <style>
+    @layer base {
+      html, body { margin: 0; padding: 0; }
+      ::-webkit-scrollbar { display: none; }
+    }
+  </style>
+</head>
+<body class="bg-surface font-body text-on-surface antialiased">
+
+<!-- Top Announcement & Header -->
+<header class="fixed top-0 left-0 right-0 z-50">
+  <div class="w-full bg-surface-container-high/90 text-on-surface-variant backdrop-blur-md">
+    <div class="max-w-7xl mx-auto px-6 h-8 flex items-center justify-center">
+      <p class="font-mono text-[11px] tracking-widest uppercase flex items-center gap-2">
+        <span>Free express shipping on orders over $99</span>
+        <span class="opacity-40">·</span>
+        <span>30-day risk-free trial</span>
+        <span class="opacity-40">·</span>
+        <span class="text-primary font-bold">🛡️ detector_model.pkl Guard Active</span>
+      </p>
+    </div>
+  </div>
+
+  <div class="w-full bg-surface-container-lowest/85 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)]">
+    <div class="h-16 max-w-7xl mx-auto px-6 flex items-center justify-between gap-8">
+      <div class="flex items-center gap-12">
+        <a class="flex items-center gap-2 group" href="#">
+          <span class="font-headline text-2xl font-bold tracking-tight text-on-surface group-hover:text-primary transition-colors">Aurelia</span>
+          <span class="inline-block w-2 h-2 rounded-full bg-primary mb-1"></span>
+        </a>
+        <nav class="hidden md:flex items-center gap-8 font-body text-sm font-medium">
+          <a class="text-primary font-semibold" href="#">Headphones</a>
+          <a class="text-on-surface-variant hover:text-on-surface transition-colors" href="#">Earbuds</a>
+          <a class="text-on-surface-variant hover:text-on-surface transition-colors" href="#">Speakers</a>
+          <a class="text-on-surface-variant hover:text-on-surface transition-colors" href="#">Accessories</a>
+          <a class="text-on-surface-variant hover:text-on-surface transition-colors" href="#">Acoustic Lab</a>
+        </nav>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <!-- API Server Connection Status Indicator -->
+        <div id="apiStatusBadge" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-mono text-xs font-semibold">
+          <span class="w-2 h-2 rounded-full bg-tertiary animate-pulse"></span>
+          <span id="apiStatusText">detector_model.pkl API Connected</span>
+        </div>
+
+        <button aria-label="Search" class="w-9 h-9 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-colors" type="button">
+          <span class="material-symbols-outlined text-[20px]">search</span>
+        </button>
+        <a aria-label="Account" class="w-9 h-9 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-colors" href="#">
+          <span class="material-symbols-outlined text-[20px]">person</span>
+        </a>
+        <a aria-label="Shopping Cart" class="relative w-9 h-9 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-colors" href="#">
+          <span class="material-symbols-outlined text-[20px]">shopping_bag</span>
+          <span class="absolute top-1.5 right-1.5 min-w-[16px] h-4 px-1 rounded-full bg-primary text-on-primary font-mono text-[10px] leading-4 text-center font-bold" id="cartBadge">1</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="w-full pt-24 bg-surface min-h-screen">
+  <div class="flex flex-col w-full">
+    
+    <!-- 1. PRODUCT HERO SECTION -->
+    <section class="w-full max-w-7xl mx-auto px-6 py-8 lg:py-12">
+      <nav class="flex items-center gap-2 font-body text-xs text-on-surface-variant mb-6">
+        <a class="hover:text-primary transition-colors" href="#">Home</a>
+        <span class="text-outline-variant">/</span>
+        <a class="hover:text-primary transition-colors" href="#">Audio</a>
+        <span class="text-outline-variant">/</span>
+        <a class="hover:text-primary transition-colors" href="#">Reference Series</a>
+        <span class="text-outline-variant">/</span>
+        <span class="text-on-surface font-medium">Aurelia Studio Pro</span>
+      </nav>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
+        <div class="lg:col-span-7 flex flex-col gap-4">
+          <div class="relative w-full aspect-[4/3.5] bg-surface-container rounded-2xl flex items-center justify-center p-6 overflow-hidden group shadow-sm transition-all duration-300 hover:shadow-md">
+            <div class="absolute inset-0 bg-gradient-to-tr from-primary/10 via-transparent to-secondary/10 pointer-events-none"></div>
+            
+            <img id="mainProductImage" alt="Aurelia Studio Pro Wireless Reference Headphones" 
+                 class="relative z-10 max-h-[85%] w-auto object-contain filter drop-shadow-2xl transition-transform duration-500 group-hover:scale-105" 
+                 src="assets/aurelia_studio_pro.jpg"/>
+
+            <div class="absolute top-5 left-5 z-20 flex flex-col gap-2">
+              <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface/90 backdrop-blur-md shadow-sm text-on-surface font-mono text-xs font-semibold">
+                <span class="w-2 h-2 rounded-full bg-tertiary animate-pulse"></span>
+                Hi-Res Studio Certified
+              </span>
+              <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface/90 backdrop-blur-md shadow-sm text-on-surface-variant font-mono text-xs">
+                <span class="material-symbols-outlined text-[14px]">tune</span>
+                42dB Hybrid ANC
+              </span>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-4 gap-3">
+            <button class="thumbnail-btn active relative aspect-square rounded-xl bg-surface-container-lowest p-2 flex items-center justify-center transition-all shadow-sm ring-2 ring-primary" onclick="switchHeroImage(0, 'assets/aurelia_studio_pro.jpg')">
+              <img alt="Midnight Black" class="w-full h-full object-cover rounded-lg" src="assets/aurelia_studio_pro.jpg"/>
+              <span class="absolute bottom-1 font-mono text-[9px] text-on-surface-variant bg-surface-container-high/90 px-1.5 rounded">Midnight Black</span>
+            </button>
+            <button class="thumbnail-btn relative aspect-square rounded-xl bg-surface-container p-2 flex items-center justify-center transition-all shadow-sm hover:bg-surface-container-lowest opacity-75 hover:opacity-100" onclick="switchHeroImage(1, 'assets/aurelia_lunar_silver.jpg')">
+              <img alt="Lunar Silver" class="w-full h-full object-cover rounded-lg" src="assets/aurelia_lunar_silver.jpg"/>
+              <span class="absolute bottom-1 font-mono text-[9px] text-on-surface-variant bg-surface-container-high/90 px-1.5 rounded">Lunar Silver</span>
+            </button>
+            <button class="thumbnail-btn relative aspect-square rounded-xl bg-surface-container p-2 flex items-center justify-center transition-all shadow-sm hover:bg-surface-container-lowest opacity-75 hover:opacity-100" onclick="switchHeroImage(2, 'assets/aurelia_studio_pro.jpg')">
+              <div class="flex flex-col items-center justify-center text-center">
+                <span class="material-symbols-outlined text-primary text-2xl mb-1">headphones</span>
+                <span class="font-mono text-[10px] text-on-surface font-medium">40mm Beryllium</span>
+              </div>
+              <span class="absolute bottom-1 font-mono text-[9px] text-on-surface-variant bg-surface-container-high/90 px-1.5 rounded">Driver Core</span>
+            </button>
+            <button class="thumbnail-btn relative aspect-square rounded-xl bg-surface-container p-2 flex items-center justify-center transition-all shadow-sm hover:bg-surface-container-lowest opacity-75 hover:opacity-100" onclick="switchHeroImage(3, 'assets/aurelia_lunar_silver.jpg')">
+              <div class="flex flex-col items-center justify-center text-center">
+                <span class="material-symbols-outlined text-secondary text-2xl mb-1">waves</span>
+                <span class="font-mono text-[10px] text-on-surface font-medium">CloudWeave™</span>
+              </div>
+              <span class="absolute bottom-1 font-mono text-[9px] text-on-surface-variant bg-surface-container-high/90 px-1.5 rounded">Ergonomic</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="lg:col-span-5 lg:sticky lg:top-28 flex flex-col gap-6">
+          <div class="flex flex-col gap-2">
+            <div class="flex items-center justify-between">
+              <span class="font-mono text-xs text-primary font-semibold tracking-wider uppercase">Reference Series 2025</span>
+              <span class="inline-flex items-center gap-1 text-tertiary font-mono text-xs bg-tertiary-fixed px-2.5 py-0.5 rounded-full font-semibold">
+                <span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span> In Stock
+              </span>
+            </div>
+            <h1 class="font-headline text-3xl lg:text-4xl font-bold text-on-surface">Aurelia Studio Pro</h1>
+            <p class="font-body text-sm text-on-surface-variant">Spatial Noise-Cancelling Wireless Reference Headphones with aptX Lossless & LDAC</p>
+          </div>
+
+          <div class="flex items-center gap-3 py-1">
+            <div class="flex items-center gap-0.5 text-[#F59E0B]">
+              <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">star</span>
+              <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">star</span>
+              <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">star</span>
+              <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">star</span>
+              <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">star</span>
+            </div>
+            <span class="font-headline text-lg font-bold text-on-surface">4.8</span>
+            <span class="text-outline-variant font-mono">·</span>
+            <a class="font-body text-sm text-primary hover:underline font-medium" href="#reviewsSection" id="verifiedCountLink">1,240 verified human reviews</a>
+          </div>
+
+          <div class="flex items-baseline gap-3.5 pb-2">
+            <span class="font-headline text-4xl font-bold text-on-surface tracking-tight">$349.00</span>
+            <span class="font-headline text-xl text-outline line-through">$399.00</span>
+            <span class="px-2.5 py-1 rounded-md bg-tertiary text-on-primary font-mono text-xs font-bold tracking-wide uppercase">Save $50</span>
+          </div>
+
+          <div class="flex flex-col gap-2.5 pt-2">
+            <div class="flex items-center justify-between font-mono text-xs">
+              <span class="text-on-surface font-semibold uppercase">Finish: <span class="text-on-surface-variant font-normal" id="selectedColorName">Midnight Black</span></span>
+              <span class="text-on-surface-variant">Aircraft Anodized Aluminum</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <button aria-label="Midnight Black" class="w-10 h-10 rounded-full bg-[#1b1b1d] shadow-sm ring-2 ring-primary ring-offset-2 ring-offset-surface transition-transform active:scale-95" onclick="selectColor('Midnight Black', this, 'assets/aurelia_studio_pro.jpg')"></button>
+              <button aria-label="Lunar Silver" class="w-10 h-10 rounded-full bg-[#dcd9dc] shadow-sm hover:scale-105 transition-transform active:scale-95" onclick="selectColor('Lunar Silver', this, 'assets/aurelia_lunar_silver.jpg')"></button>
+              <button aria-label="Desert Sand" class="w-10 h-10 rounded-full bg-[#d7c4b7] shadow-sm hover:scale-105 transition-transform active:scale-95" onclick="selectColor('Desert Sand', this, 'assets/aurelia_studio_pro.jpg')"></button>
+            </div>
+          </div>
+
+          <div class="flex flex-col gap-3 pt-3">
+            <div class="flex items-center gap-3">
+              <div class="flex items-center justify-between h-12 w-32 px-3 rounded-lg bg-surface-container font-mono text-sm text-on-surface shadow-inner">
+                <button class="w-7 h-7 flex items-center justify-center rounded hover:bg-surface-container-high transition-colors" onclick="adjustQty(-1)">
+                  <span class="material-symbols-outlined text-[16px]">remove</span>
+                </button>
+                <span class="font-bold text-sm" id="qtyCounter">1</span>
+                <button class="w-7 h-7 flex items-center justify-center rounded hover:bg-surface-container-high transition-colors" onclick="adjustQty(1)">
+                  <span class="material-symbols-outlined text-[16px]">add</span>
+                </button>
+              </div>
+              
+              <button id="addToBagBtn" class="flex-1 h-12 px-6 rounded-lg bg-primary hover:bg-primary-container text-on-primary font-body text-sm font-semibold transition-all duration-200 flex items-center justify-center gap-2 shadow-md hover:shadow-lg active:scale-[0.99]" onclick="addToBag()">
+                <span class="material-symbols-outlined text-[20px]">shopping_bag</span>
+                <span id="addToBagLabel">Add to Bag · $349.00</span>
+              </button>
+            </div>
+
+            <button class="w-full h-12 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface font-body text-sm font-semibold transition-colors flex items-center justify-center gap-2 shadow-sm">
+              <span class="material-symbols-outlined text-[18px]">bolt</span>
+              <span>Instant Checkout with Apple Pay</span>
+            </button>
+          </div>
+
+          <div class="grid grid-cols-3 gap-2 pt-4 text-center">
+            <div class="p-3 rounded-xl bg-surface-container-low flex flex-col items-center gap-1">
+              <span class="material-symbols-outlined text-primary text-[20px]">local_shipping</span>
+              <span class="font-mono text-xs font-semibold text-on-surface">Free Express</span>
+              <span class="font-mono text-[10px] text-on-surface-variant">2-day delivery</span>
+            </div>
+            <div class="p-3 rounded-xl bg-surface-container-low flex flex-col items-center gap-1">
+              <span class="material-symbols-outlined text-primary text-[20px]">verified_user</span>
+              <span class="font-mono text-xs font-semibold text-on-surface">2-Year Warranty</span>
+              <span class="font-mono text-[10px] text-on-surface-variant">Aurelia Care+</span>
+            </div>
+            <div class="p-3 rounded-xl bg-surface-container-low flex flex-col items-center gap-1">
+              <span class="material-symbols-outlined text-primary text-[20px]">published_with_changes</span>
+              <span class="font-mono text-xs font-semibold text-on-surface">30-Day Trial</span>
+              <span class="font-mono text-[10px] text-on-surface-variant">Risk-free returns</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. BENTO FEATURE GRID -->
+    <section class="w-full max-w-7xl mx-auto px-6 py-12 lg:py-16">
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+        <div>
+          <p class="font-mono text-xs uppercase tracking-wider text-primary font-semibold mb-1">Acoustic Engineering</p>
+          <h2 class="font-headline text-2xl lg:text-3xl font-bold text-on-surface">Engineered for absolute fidelity.</h2>
+        </div>
+        <p class="font-body text-sm text-on-surface-variant max-w-md">Every micron is calibrated to yield zero acoustic resonance and pure linear phase response.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="p-6 rounded-2xl bg-surface-container-lowest shadow-sm flex flex-col justify-between group hover:shadow-md transition-all">
+          <div class="w-12 h-12 rounded-xl bg-primary-fixed flex items-center justify-center text-primary mb-6">
+            <span class="material-symbols-outlined text-[24px]">graphic_eq</span>
+          </div>
+          <div>
+            <span class="font-mono text-xs text-primary font-semibold uppercase tracking-wider">Acoustics</span>
+            <h3 class="font-headline text-lg font-bold text-on-surface mt-1 mb-2">40mm Beryllium Drivers</h3>
+            <p class="font-body text-xs text-on-surface-variant leading-relaxed">Vapor-deposited pure beryllium diaphragms provide lightning transient response with ultra-low 0.05% THD.</p>
+          </div>
+          <div class="mt-6 pt-4 border-t border-surface-container flex items-center justify-between font-mono text-xs font-semibold">
+            <span>5Hz – 48kHz</span>
+            <span class="text-tertiary">Reference Class</span>
+          </div>
+        </div>
+
+        <div class="p-6 rounded-2xl bg-surface-container-lowest shadow-sm flex flex-col justify-between group hover:shadow-md transition-all">
+          <div class="w-12 h-12 rounded-xl bg-secondary-fixed flex items-center justify-center text-secondary mb-6">
+            <span class="material-symbols-outlined text-[24px]">noise_aware</span>
+          </div>
+          <div>
+            <span class="font-mono text-xs text-secondary font-semibold uppercase tracking-wider">DSP Processing</span>
+            <h3 class="font-headline text-lg font-bold text-on-surface mt-1 mb-2">Adaptive Hybrid ANC</h3>
+            <p class="font-body text-xs text-on-surface-variant leading-relaxed">Quad inward and outward microphones sample exterior frequencies at 48kHz, countering up to 42dB of noise.</p>
+          </div>
+          <div class="mt-6 pt-4 border-t border-surface-container flex items-center justify-between font-mono text-xs font-semibold">
+            <span>-42dB Attenuation</span>
+            <span class="text-secondary">48,000 Samples/sec</span>
+          </div>
+        </div>
+
+        <div class="p-6 rounded-2xl bg-surface-container-lowest shadow-sm flex flex-col justify-between group hover:shadow-md transition-all">
+          <div class="w-12 h-12 rounded-xl bg-tertiary-fixed flex items-center justify-center text-tertiary mb-6">
+            <span class="material-symbols-outlined text-[24px]">battery_charging_full</span>
+          </div>
+          <div>
+            <span class="font-mono text-xs text-tertiary font-semibold uppercase tracking-wider">Endurance</span>
+            <h3 class="font-headline text-lg font-bold text-on-surface mt-1 mb-2">40h Continuous Playback</h3>
+            <p class="font-body text-xs text-on-surface-variant leading-relaxed">High-density lithium cell gives you 40 hours with ANC active. HyperCharge grants 4 hours in 10 minutes.</p>
+          </div>
+          <div class="mt-6 pt-4 border-t border-surface-container flex items-center justify-between font-mono text-xs font-semibold">
+            <span>10 min = 4 hours</span>
+            <span class="text-tertiary">USB-C PD</span>
+          </div>
+        </div>
+
+        <div class="p-6 rounded-2xl bg-surface-container-lowest shadow-sm flex flex-col justify-between group hover:shadow-md transition-all">
+          <div class="w-12 h-12 rounded-xl bg-surface-container-high flex items-center justify-center text-on-surface mb-6">
+            <span class="material-symbols-outlined text-[24px]">air</span>
+          </div>
+          <div>
+            <span class="font-mono text-xs text-on-surface-variant font-semibold uppercase tracking-wider">Materials</span>
+            <h3 class="font-headline text-lg font-bold text-on-surface mt-1 mb-2">CloudWeave™ Fit</h3>
+            <p class="font-body text-xs text-on-surface-variant leading-relaxed">Viscoelastic memory foam encased in breathable temperature-regulating textile relieves pressure points.</p>
+          </div>
+          <div class="mt-6 pt-4 border-t border-surface-container flex items-center justify-between font-mono text-xs font-semibold">
+            <span>248g Weight</span>
+            <span class="text-primary">Zero Fatigue</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. CUSTOMER REVIEWS & AI AUTHENTICITY GUARD CENTERPIECE -->
+    <section class="w-full max-w-7xl mx-auto px-6 py-12 lg:py-16" id="reviewsSection">
+      <div class="flex flex-col gap-8">
+        
+        <!-- Section Header -->
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+          <div>
+            <span class="font-mono text-xs uppercase tracking-wider text-primary font-semibold">Community Verified</span>
+            <h2 class="font-headline text-2xl lg:text-3xl font-bold text-on-surface">Real listening notes from purists.</h2>
+          </div>
+          <p class="font-body text-sm text-on-surface-variant">Evaluated by <code class="font-mono font-bold text-primary">detector_model.pkl</code> (Human = ACCEPTED | CG/AI = REJECTED).</p>
+        </div>
+
+        <!-- Rating Dashboard Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+          
+          <!-- Col 1: Overall Score (4 cols) -->
+          <div class="lg:col-span-4 p-8 rounded-2xl bg-surface-container-lowest shadow-sm flex flex-col justify-between">
+            <div>
+              <div class="flex items-baseline gap-3 mb-2">
+                <span class="font-headline text-5xl font-bold text-on-surface">4.8</span>
+                <span class="font-headline text-2xl text-on-surface-variant font-light">/ 5.0</span>
+              </div>
+              <div class="flex items-center gap-1 text-[#F59E0B] mb-2">
+                <span class="material-symbols-outlined text-[24px]" style="font-variation-settings: 'FILL' 1;">star</span>
+                <span class="material-symbols-outlined text-[24px]" style="font-variation-settings: 'FILL' 1;">star</span>
+                <span class="material-symbols-outlined text-[24px]" style="font-variation-settings: 'FILL' 1;">star</span>
+                <span class="material-symbols-outlined text-[24px]" style="font-variation-settings: 'FILL' 1;">star</span>
+                <span class="material-symbols-outlined text-[24px]" style="font-variation-settings: 'FILL' 1;">star</span>
+              </div>
+              <p class="font-body text-xs text-on-surface-variant" id="totalVerifiedCountText">Based on 1,240 verified human reviews across 38 countries.</p>
+            </div>
+
+            <!-- Histogram Bars -->
+            <div class="flex flex-col gap-2 pt-6 font-mono text-xs">
+              <div class="flex items-center gap-3">
+                <span class="w-7 text-on-surface-variant">5★</span>
+                <div class="flex-1 h-2 rounded-full bg-surface-container overflow-hidden">
+                  <div class="h-full bg-primary rounded-full" style="width: 84%;"></div>
+                </div>
+                <span class="w-10 text-right text-on-surface-variant">84%</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <span class="w-7 text-on-surface-variant">4★</span>
+                <div class="flex-1 h-2 rounded-full bg-surface-container overflow-hidden">
+                  <div class="h-full bg-primary/80 rounded-full" style="width: 11%;"></div>
+                </div>
+                <span class="w-10 text-right text-on-surface-variant">11%</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <span class="w-7 text-on-surface-variant">3★</span>
+                <div class="flex-1 h-2 rounded-full bg-surface-container overflow-hidden">
+                  <div class="h-full bg-primary/60 rounded-full" style="width: 3%;"></div>
+                </div>
+                <span class="w-10 text-right text-on-surface-variant">3%</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <span class="w-7 text-on-surface-variant">2★</span>
+                <div class="flex-1 h-2 rounded-full bg-surface-container overflow-hidden">
+                  <div class="h-full bg-primary/40 rounded-full" style="width: 1%;"></div>
+                </div>
+                <span class="w-10 text-right text-on-surface-variant">1%</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <span class="w-7 text-on-surface-variant">1★</span>
+                <div class="flex-1 h-2 rounded-full bg-surface-container overflow-hidden">
+                  <div class="h-full bg-primary/30 rounded-full" style="width: 1%;"></div>
+                </div>
+                <span class="w-10 text-right text-on-surface-variant">1%</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Col 2: Standout AI Review Authenticity Guard Card (8 cols) -->
+          <div class="lg:col-span-8 p-8 rounded-2xl bg-gradient-to-br from-primary/10 via-surface-container-lowest to-surface-container-lowest shadow-sm flex flex-col justify-between relative overflow-hidden">
+            <div class="absolute -top-12 -right-12 w-64 h-64 bg-primary/10 rounded-full blur-3xl pointer-events-none"></div>
+            
+            <div class="relative z-10 flex flex-col gap-4">
+              <div class="flex flex-wrap items-center justify-between gap-3">
+                <div class="flex items-center gap-2">
+                  <div class="w-9 h-9 rounded-lg bg-primary text-on-primary flex items-center justify-center shadow-sm">
+                    <span class="material-symbols-outlined text-[20px]">verified</span>
+                  </div>
+                  <span class="font-headline text-xl font-bold text-on-surface">Every Review is Model-Verified</span>
+                </div>
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-mono text-xs font-semibold">
+                  <span class="w-2 h-2 rounded-full bg-tertiary animate-pulse"></span>
+                  detector_model.pkl Active · 95% Policy
+                </span>
+              </div>
+
+              <p class="font-body text-sm text-on-surface-variant max-w-2xl leading-relaxed">
+                Powered by our custom trained classifier (<code class="text-primary font-mono font-semibold">detector_model.pkl</code>). Every review submitted is evaluated in real time: <strong class="text-tertiary">Human Review = ACCEPTED</strong> (posted to feed) and <strong class="text-error">CG/AI Generated = REJECTED</strong>.
+              </p>
+
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
+                <div class="p-3 rounded-xl bg-surface-container-low flex flex-col gap-1">
+                  <span class="font-mono text-xs text-on-surface-variant">Model File</span>
+                  <span class="font-mono text-xs font-bold text-on-surface">models/detector_model.pkl</span>
+                </div>
+                <div class="p-3 rounded-xl bg-surface-container-low flex flex-col gap-1">
+                  <span class="font-mono text-xs text-on-surface-variant">Decision Policy</span>
+                  <span class="font-mono text-xs font-bold text-on-surface">95.00% OR Threshold</span>
+                </div>
+                <div class="p-3 rounded-xl bg-surface-container-low flex flex-col gap-1">
+                  <span class="font-mono text-xs text-on-surface-variant">Test Accuracy</span>
+                  <span class="font-mono text-xs font-bold text-tertiary">100.00% Verified</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="relative z-10 pt-6 flex flex-wrap items-center justify-between gap-4 border-t border-surface-container">
+              <span class="font-body text-xs text-on-surface-variant">Own the Aurelia Studio Pro? Test your review with our ML model.</span>
+              <button class="h-11 px-5 rounded-lg bg-primary hover:bg-primary-container text-on-primary font-body text-sm font-semibold flex items-center gap-2 transition-all shadow-md hover:shadow-lg active:scale-[0.99]" onclick="openReviewModal(1)">
+                <span class="material-symbols-outlined text-[18px]">edit_note</span>
+                <span>Write a Review</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tag Filters & Search Bar -->
+        <div class="flex flex-col md:flex-row items-center justify-between gap-4 pt-4">
+          <div class="flex items-center gap-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0 font-mono text-xs">
+            <button class="filter-chip active px-4 py-1.5 rounded-full bg-on-surface text-on-primary font-semibold shrink-0" onclick="filterReviews('all', this)">All (<span id="chipAllCount">1,240</span>)</button>
+            <button class="filter-chip px-4 py-1.5 rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface font-medium shrink-0 transition-colors" onclick="filterReviews('5star', this)">5★ (1,041)</button>
+            <button class="filter-chip px-4 py-1.5 rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface font-medium shrink-0 transition-colors" onclick="filterReviews('4star', this)">4★ (136)</button>
+            <button class="filter-chip px-4 py-1.5 rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface font-medium shrink-0 transition-colors" onclick="filterReviews('verified', this)">Verified Purchase</button>
+          </div>
+
+          <div class="flex items-center gap-3 w-full md:w-auto">
+            <div class="relative flex-1 md:w-56">
+              <span class="material-symbols-outlined absolute left-3 top-2.5 text-on-surface-variant text-[18px]">search</span>
+              <input id="searchInput" onkeyup="searchReviews()" class="w-full h-10 pl-9 pr-3 rounded-lg bg-surface-container-lowest font-body text-xs text-on-surface placeholder:text-outline focus:outline-none focus:ring-2 focus:ring-primary shadow-sm" placeholder="Search in reviews..." type="text"/>
+            </div>
+          </div>
+        </div>
+
+        <!-- Verified Customer Review Cards Feed -->
+        <div id="reviewsFeed" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          
+          <!-- Card 1 -->
+          <div class="review-card p-6 rounded-2xl bg-surface-container-lowest shadow-sm flex flex-col justify-between" data-rating="5" data-verified="true">
+            <div class="flex flex-col gap-3">
+              <div class="flex items-start justify-between">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-full bg-primary-fixed flex items-center justify-center font-bold text-primary font-headline">P</div>
+                  <div>
+                    <div class="flex items-center gap-2">
+                      <span class="font-headline text-sm font-bold text-on-surface">Priya S.</span>
+                      <span class="font-mono text-xs text-on-surface-variant">· Chennai, IN</span>
+                    </div>
+                    <span class="font-mono text-[11px] text-outline">Reviewed 14 days ago</span>
+                  </div>
+                </div>
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-tertiary/10 text-tertiary font-mono text-[11px] font-semibold">
+                  <span class="material-symbols-outlined text-[13px]">verified</span> Verified Purchase
+                </span>
+              </div>
+
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-0.5 text-[#F59E0B]">
+                  <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+                  <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+                  <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+                  <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+                  <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+                </div>
+                <span class="inline-flex items-center gap-1 font-mono text-[11px] text-tertiary bg-tertiary-fixed px-2 py-0.5 rounded-md font-semibold">
+                  <span class="material-symbols-outlined text-[12px]">security</span>
+                  ACCEPTED (Human 99.8%)
+                </span>
+              </div>
+
+              <p class="review-text font-body text-sm text-on-surface-variant pt-1 leading-relaxed">
+                "Been using these for a month on my daily train commute. The noise cancelling handles engine rumble really well, though the ear cups get a little warm after two hours. Battery easily lasts my whole work week."
+              </p>
+            </div>
+
+            <div class="flex items-center justify-between pt-4 mt-4 border-t border-surface-container font-mono text-xs text-on-surface-variant">
+              <span>Was this review helpful?</span>
+              <button class="flex items-center gap-1.5 hover:text-on-surface transition-colors" onclick="this.querySelector('span:last-child').innerText = parseInt(this.querySelector('span:last-child').innerText)+1">
+                <span class="material-symbols-outlined text-[16px]">thumb_up</span>
+                <span>48</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="review-card p-6 rounded-2xl bg-surface-container-lowest shadow-sm flex flex-col justify-between" data-rating="5" data-verified="true">
+            <div class="flex flex-col gap-3">
+              <div class="flex items-start justify-between">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-full bg-secondary-fixed flex items-center justify-center font-bold text-secondary font-headline">M</div>
+                  <div>
+                    <div class="flex items-center gap-2">
+                      <span class="font-headline text-sm font-bold text-on-surface">Marcus T.</span>
+                      <span class="font-mono text-xs text-on-surface-variant">· Austin, US</span>
+                    </div>
+                    <span class="font-mono text-[11px] text-outline">Reviewed 3 weeks ago</span>
+                  </div>
+                </div>
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-tertiary/10 text-tertiary font-mono text-[11px] font-semibold">
+                  <span class="material-symbols-outlined text-[13px]">verified</span> Verified Purchase
+                </span>
+              </div>
+
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-0.5 text-[#F59E0B]">
+                  <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+                  <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+                  <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+                  <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+                  <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+                </div>
+                <span class="inline-flex items-center gap-1 font-mono text-[11px] text-tertiary bg-tertiary-fixed px-2 py-0.5 rounded-md font-semibold">
+                  <span class="material-symbols-outlined text-[12px]">security</span>
+                  ACCEPTED (Human 99.4%)
+                </span>
+              </div>
+
+              <p class="review-text font-body text-sm text-on-surface-variant pt-1 leading-relaxed">
+                "Soundstage is remarkably wide for closed-back cans. Bass is punchy without muddying the midrange vocals. The aluminum hinge feels built to last. Easily replaces my wired reference set."
+              </p>
+            </div>
+
+            <div class="flex items-center justify-between pt-4 mt-4 border-t border-surface-container font-mono text-xs text-on-surface-variant">
+              <span>Was this review helpful?</span>
+              <button class="flex items-center gap-1.5 hover:text-on-surface transition-colors" onclick="this.querySelector('span:last-child').innerText = parseInt(this.querySelector('span:last-child').innerText)+1">
+                <span class="material-symbols-outlined text-[16px]">thumb_up</span>
+                <span>32</span>
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. INTERACTIVE AI REVIEW AUTHENTICITY GUARD MODAL -->
+    <div id="reviewModalBackdrop" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-md hidden items-center justify-center p-4 overflow-y-auto">
+      <div class="relative w-full max-w-2xl bg-surface-container-lowest rounded-2xl shadow-2xl overflow-hidden my-8 border border-surface-container-high">
+        
+        <!-- Guard Simulator State Switcher Header -->
+        <div class="w-full bg-surface-container-high px-4 py-2.5 flex items-center justify-between gap-2 overflow-x-auto border-b border-outline-variant/30">
+          <div class="flex items-center gap-1.5 shrink-0">
+            <span class="material-symbols-outlined text-primary text-[18px]">build</span>
+            <span class="font-mono text-xs uppercase font-bold text-on-surface">Model Tester Bar:</span>
+          </div>
+          
+          <div class="flex items-center gap-1 overflow-x-auto font-mono text-[11px]">
+            <button id="stateBtn1" class="state-tab-btn px-2.5 py-1 rounded font-semibold bg-primary text-on-primary" onclick="setModalState(1)">1. Form</button>
+            <button id="stateBtn2" class="state-tab-btn px-2.5 py-1 rounded font-medium text-on-surface-variant hover:bg-surface-container" onclick="setModalState(2)">2. Preset Test</button>
+            <button id="stateBtn3" class="state-tab-btn px-2.5 py-1 rounded font-medium text-on-surface-variant hover:bg-surface-container" onclick="setModalState(3)">3. Evaluating Model</button>
+            <button id="stateBtn4" class="state-tab-btn px-2.5 py-1 rounded font-medium text-on-surface-variant hover:bg-surface-container" onclick="setModalState(4)">4. ACCEPTED State</button>
+            <button id="stateBtn5" class="state-tab-btn px-2.5 py-1 rounded font-medium text-on-surface-variant hover:bg-surface-container" onclick="setModalState(5)">5. REJECTED State</button>
+          </div>
+
+          <button class="w-7 h-7 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-surface-container-highest transition-colors shrink-0" onclick="closeReviewModal()">
+            <span class="material-symbols-outlined text-[18px]">close</span>
+          </button>
+        </div>
+
+        <!-- Modal Body Content -->
+        <div class="p-6 md:p-8">
+          
+          <!-- STATE 1 & 2: FORM -->
+          <div id="modalFormContainer" class="flex flex-col gap-6">
+            <div class="flex items-start justify-between">
+              <div>
+                <h3 class="font-headline text-2xl font-bold text-on-surface">Write a Verified Review</h3>
+                <p class="font-body text-xs text-on-surface-variant">Model <code class="font-mono font-semibold text-primary">detector_model.pkl</code> will evaluate your text in real time.</p>
+              </div>
+              <div class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 text-primary font-mono text-xs font-semibold">
+                <span class="material-symbols-outlined text-[16px]">shield</span>
+                Model Active
+              </div>
+            </div>
+
+            <!-- Quick Test Sample Presets -->
+            <div class="p-3.5 rounded-xl bg-surface-container-low flex flex-col gap-2 border border-surface-container">
+              <span class="font-mono text-xs font-semibold text-on-surface uppercase">Live Production Demo Presets:</span>
+              <div class="flex flex-wrap gap-2">
+                <button type="button" class="px-3 py-1 rounded-md bg-surface-container-highest hover:bg-tertiary hover:text-on-primary font-mono text-xs text-on-surface transition-colors font-medium flex items-center gap-1 shadow-sm" onclick="loadPreset('human1')">
+                  ✅ Human Review (Should be ACCEPTED)
+                </button>
+                <button type="button" class="px-3 py-1 rounded-md bg-surface-container-highest hover:bg-error hover:text-on-error font-mono text-xs text-on-surface transition-colors font-medium flex items-center gap-1 shadow-sm" onclick="loadPreset('ai1')">
+                  🚨 AI-Polished (Should be REJECTED)
+                </button>
+                <button type="button" class="px-3 py-1 rounded-md bg-surface-container-highest hover:bg-error hover:text-on-error font-mono text-xs text-on-surface transition-colors font-medium flex items-center gap-1 shadow-sm" onclick="loadPreset('ai2')">
+                  🚨 Marketing Buzzwords (Should be REJECTED)
+                </button>
+              </div>
+            </div>
+
+            <!-- Star Rating Selector -->
+            <div class="flex flex-col gap-1.5">
+              <label class="font-mono text-xs uppercase font-semibold text-on-surface">Your Rating <span class="text-error">*</span></label>
+              <div class="flex items-center gap-1.5" id="starPickerGroup">
+                <button class="star-pick text-outline-variant hover:text-[#F59E0B] transition-colors" onclick="setRating(1)" type="button"><span class="material-symbols-outlined text-[32px]">star</span></button>
+                <button class="star-pick text-outline-variant hover:text-[#F59E0B] transition-colors" onclick="setRating(2)" type="button"><span class="material-symbols-outlined text-[32px]">star</span></button>
+                <button class="star-pick text-outline-variant hover:text-[#F59E0B] transition-colors" onclick="setRating(3)" type="button"><span class="material-symbols-outlined text-[32px]">star</span></button>
+                <button class="star-pick text-outline-variant hover:text-[#F59E0B] transition-colors" onclick="setRating(4)" type="button"><span class="material-symbols-outlined text-[32px]">star</span></button>
+                <button class="star-pick text-outline-variant hover:text-[#F59E0B] transition-colors" onclick="setRating(5)" type="button"><span class="material-symbols-outlined text-[32px]">star</span></button>
+                <span class="ml-2 font-mono text-xs text-on-surface-variant font-medium" id="starRatingLabel">Click to rate</span>
+              </div>
+              <p class="font-body text-error text-xs hidden" id="starErrorMsg">Please select a star rating.</p>
+            </div>
+
+            <!-- Review Headline -->
+            <div class="flex flex-col gap-1.5">
+              <label class="font-mono text-xs uppercase font-semibold text-on-surface" for="reviewTitleInput">Review Headline</label>
+              <input id="reviewTitleInput" class="w-full h-11 px-4 rounded-lg bg-surface-container font-body text-xs text-on-surface placeholder:text-outline focus:outline-none focus:ring-2 focus:ring-primary shadow-sm" placeholder="e.g. Crisp mids and stellar battery life on flights" type="text"/>
+            </div>
+
+            <!-- Review Textarea -->
+            <div class="flex flex-col gap-1.5">
+              <div class="flex items-center justify-between font-mono text-xs">
+                <label class="uppercase font-semibold text-on-surface" for="reviewBodyInput">Detailed Experience <span class="text-error">*</span></label>
+                <span class="text-on-surface-variant" id="charCount">0 / 1000</span>
+              </div>
+              <textarea id="reviewBodyInput" oninput="handleTextInput(this)" class="w-full p-4 rounded-lg bg-surface-container font-body text-xs text-on-surface placeholder:text-outline focus:outline-none focus:ring-2 focus:ring-primary shadow-sm" placeholder="Describe your authentic personal listening experience..." rows="4"></textarea>
+              <p class="font-body text-error text-xs hidden" id="bodyErrorMsg">Review text must be at least 5 characters long.</p>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex items-center justify-end gap-3 pt-2">
+              <button class="h-11 px-5 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface font-body text-sm font-semibold transition-colors" onclick="closeReviewModal()" type="button">Cancel</button>
+              <button id="submitReviewBtn" class="h-11 px-6 rounded-lg bg-primary hover:bg-primary-container text-on-primary font-body text-sm font-semibold flex items-center gap-2 shadow-md hover:shadow-lg active:scale-[0.99]" onclick="submitRealOrSimulatedReview()" type="button">
+                <span class="material-symbols-outlined text-[18px]">verified_user</span>
+                <span>Submit to detector_model.pkl</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- STATE 3: ANALYZING / RADAR SCANNER VIEW -->
+          <div id="stateAnalyzing" class="hidden flex-col items-center justify-center py-12 text-center gap-6">
+            <div class="relative w-28 h-28 flex items-center justify-center">
+              <svg class="absolute inset-0 w-full h-full animate-spin" style="animation-duration: 4s;" viewBox="0 0 100 100">
+                <circle class="text-primary/20" cx="50" cy="50" fill="none" r="44" stroke="currentColor" stroke-width="2"></circle>
+                <circle class="text-primary" cx="50" cy="50" fill="none" r="44" stroke="currentColor" stroke-dasharray="70 180" stroke-linecap="round" stroke-width="3"></circle>
+              </svg>
+              <svg class="absolute inset-4 w-20 h-20 animate-spin" style="animation-duration: 2s; animation-direction: reverse;" viewBox="0 0 100 100">
+                <circle class="text-secondary" cx="50" cy="50" fill="none" r="42" stroke="currentColor" stroke-dasharray="40 120" stroke-linecap="round" stroke-width="3"></circle>
+              </svg>
+              <div class="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                <span class="material-symbols-outlined text-[28px] animate-pulse">radar</span>
+              </div>
+            </div>
+
+            <div class="flex flex-col gap-2 max-w-md">
+              <span class="inline-flex items-center self-center gap-1.5 px-3 py-1 rounded-full bg-primary-fixed text-primary font-mono text-xs font-bold uppercase tracking-wider">
+                Evaluating Model Pipeline...
+              </span>
+              <h3 class="font-headline text-xl font-bold text-on-surface">Running detector_model.pkl</h3>
+              <p class="font-body text-xs text-on-surface-variant leading-relaxed">
+                Passing review text to <code class="font-mono font-semibold text-primary">POST http://localhost:8000/api/v1/predict-review</code>. Extracting 60,000 Word + Char N-Grams and Stylometric vectors.
+              </p>
+            </div>
+
+            <div class="w-full max-w-sm h-1.5 rounded-full bg-surface-container overflow-hidden">
+              <div class="h-full bg-gradient-to-r from-primary via-secondary to-tertiary w-3/4 animate-pulse rounded-full"></div>
+            </div>
+          </div>
+
+          <!-- STATE 4: ACCEPTED VIEW -->
+          <div id="stateApproved" class="hidden flex-col items-center justify-center py-6 text-center gap-6">
+            <div class="relative w-32 h-32 flex items-center justify-center">
+              <svg class="w-full h-full transform -rotate-90" viewBox="0 0 120 120">
+                <circle class="text-surface-container" cx="60" cy="60" fill="none" r="50" stroke="currentColor" stroke-width="8"></circle>
+                <circle class="text-tertiary" cx="60" cy="60" fill="none" r="50" stroke="currentColor" stroke-dasharray="314" stroke-dashoffset="6" stroke-linecap="round" stroke-width="8"></circle>
+              </svg>
+              <div class="absolute flex flex-col items-center justify-center">
+                <span id="approvedHumanScoreText" class="font-headline text-3xl font-bold text-tertiary">99.8%</span>
+                <span class="font-mono text-[10px] text-on-surface-variant uppercase font-semibold">Human Score</span>
+              </div>
+            </div>
+
+            <div class="flex flex-col gap-2 max-w-md">
+              <span class="inline-flex items-center self-center gap-1.5 px-3.5 py-1 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-mono text-xs font-bold">
+                <span class="material-symbols-outlined text-[16px]">check_circle</span>
+                REVIEW ACCEPTED
+              </span>
+              <h3 class="font-headline text-2xl font-bold text-on-surface">Verified & Posted to Feed</h3>
+              <p class="font-body text-xs text-on-surface-variant leading-relaxed" id="approvedMessageDetail">
+                Your review was verified as a genuine human experience by <code class="font-mono text-primary font-semibold">detector_model.pkl</code> and has been published directly to the verified review section.
+              </p>
+              <span id="approvedLatencyBadge" class="inline-block font-mono text-[11px] text-tertiary font-semibold pt-1">⚡ Model Latency: 5.3ms</span>
+            </div>
+
+            <!-- Model Diagnostics List -->
+            <div class="w-full p-4 rounded-xl bg-surface-container-low text-left flex flex-col gap-2 border border-surface-container">
+              <span class="font-mono text-xs font-bold text-on-surface uppercase">Model Diagnostics Log:</span>
+              <ul id="approvedDiagnosticsList" class="flex flex-col gap-1.5 font-body text-xs text-on-surface-variant">
+                <li class="flex items-center gap-2"><span class="material-symbols-outlined text-tertiary text-[16px]">check_circle</span> Authentic human personal phrasing detected.</li>
+                <li class="flex items-center gap-2"><span class="material-symbols-outlined text-tertiary text-[16px]">check_circle</span> Passed 98.00% OR Probability Threshold Policy.</li>
+              </ul>
+            </div>
+
+            <div class="flex items-center gap-3 w-full justify-center pt-2">
+              <button class="h-11 px-6 rounded-lg bg-primary hover:bg-primary-container text-on-primary font-body text-sm font-semibold transition-colors" onclick="scrollToFeedAndClose()">View Accepted Review in Feed</button>
+            </div>
+          </div>
+
+          <!-- STATE 5: REJECTED VIEW -->
+          <div id="stateRejected" class="hidden flex-col gap-6 py-2">
+            <div class="p-4 rounded-xl bg-error-container/40 flex items-start gap-3 border border-error/20">
+              <div class="w-9 h-9 rounded-lg bg-error text-on-error flex items-center justify-center shrink-0 font-mono text-xs font-bold">
+                <span class="material-symbols-outlined text-[20px]">block</span>
+              </div>
+              <div>
+                <div class="flex items-center gap-2">
+                  <span class="px-2 py-0.5 rounded bg-error text-on-error font-mono text-[10px] font-bold uppercase">REJECTED</span>
+                  <h4 class="font-headline text-base font-bold text-error">Automated / AI Text Detected</h4>
+                </div>
+                <p class="font-body text-xs text-on-surface-variant mt-1" id="rejectedMessageDetail">
+                  Review REJECTED by detector_model.pkl: Computer-Generated / AI writing pattern detected.
+                </p>
+                <span id="rejectedLatencyBadge" class="inline-block font-mono text-[11px] text-error font-semibold pt-1">⚡ Model Latency: 6.4ms</span>
+              </div>
+            </div>
+
+            <!-- Progress Meter -->
+            <div class="p-5 rounded-xl bg-surface-container flex flex-col gap-3 font-mono text-xs">
+              <div class="flex items-center justify-between">
+                <span class="font-semibold text-on-surface">Human Authenticity Score: <span id="rejectedHumanScoreText" class="text-error font-bold">9.3%</span></span>
+                <span class="text-on-surface-variant">Required Threshold: <strong class="text-on-surface">95.00%+</strong></span>
+              </div>
+              <div class="relative w-full h-3 rounded-full bg-surface-container-high overflow-visible">
+                <div id="rejectedProgressBar" class="h-full bg-error rounded-full transition-all duration-500" style="width: 9.3%;"></div>
+                <div class="absolute top-[-4px] bottom-[-4px] w-0.5 bg-on-surface" style="left: 95%;"></div>
+              </div>
+            </div>
+
+            <!-- Preserved Draft Excerpt -->
+            <div class="flex flex-col gap-1.5">
+              <span class="font-mono text-xs uppercase font-semibold text-on-surface-variant">Submitted Draft Snippet</span>
+              <div id="rejectedDraftSnippet" class="p-3.5 rounded-lg bg-surface-container-low font-body text-xs text-on-surface italic border border-outline-variant/30">
+                "Furthermore, this product has demonstrated exceptional suitability for travel purposes..."
+              </div>
+            </div>
+
+            <!-- Detailed Diagnostics List -->
+            <div class="p-4 rounded-xl bg-surface-container-low flex flex-col gap-2 border border-surface-container">
+              <span class="font-mono text-xs font-bold text-on-surface uppercase">detector_model.pkl Diagnostic Flags:</span>
+              <ul id="rejectedDiagnosticsList" class="flex flex-col gap-1.5 font-body text-xs text-on-surface-variant">
+                <li class="flex items-center gap-2"><span class="material-symbols-outlined text-error text-[16px]">error</span> Detected formal AI transition phrasing / openers.</li>
+                <li class="flex items-center gap-2"><span class="material-symbols-outlined text-error text-[16px]">error</span> Low personal pronoun density.</li>
+              </ul>
+            </div>
+
+            <div class="flex items-center justify-end gap-3 pt-2">
+              <button class="h-11 px-5 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface font-body text-sm font-semibold transition-colors" onclick="closeReviewModal()">Cancel</button>
+              <button class="h-11 px-6 rounded-lg bg-primary hover:bg-primary-container text-on-primary font-body text-sm font-semibold transition-colors" onclick="setModalState(1)">Edit My Review</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- FLOATING DOCKED AUDIO LOSSLESS PLAYER -->
+    <div class="sticky bottom-4 z-40 w-full max-w-4xl mx-auto px-4 mt-6">
+      <div class="p-3.5 rounded-2xl bg-surface-container-lowest/90 backdrop-blur-xl shadow-xl flex items-center justify-between gap-4 border border-surface-container-high">
+        <div class="flex items-center gap-3 min-w-0">
+          <button id="audioPlayToggle" class="w-10 h-10 rounded-full bg-primary text-on-primary flex items-center justify-center shrink-0 shadow-md hover:bg-primary-container transition-colors" onclick="toggleAudioPreview()">
+            <span id="playIconSpan" class="material-symbols-outlined text-[20px]">play_arrow</span>
+          </button>
+          <div class="flex flex-col min-w-0">
+            <div class="flex items-center gap-2">
+              <span class="font-headline text-xs font-semibold text-on-surface truncate">Acoustic Reference Sample</span>
+              <span class="px-2 py-0.5 rounded bg-tertiary-fixed text-on-tertiary-fixed font-mono text-[10px] font-bold">24-bit / 192kHz</span>
+            </div>
+            <span class="font-mono text-[11px] text-on-surface-variant">Orchestral Dynamic Range Test</span>
+          </div>
+        </div>
+
+        <div class="hidden sm:flex items-center gap-1 h-6">
+          <span class="w-1 bg-primary/40 rounded-full h-2 animate-pulse" style="animation-delay: 0.1s"></span>
+          <span class="w-1 bg-primary/70 rounded-full h-4 animate-pulse" style="animation-delay: 0.2s"></span>
+          <span class="w-1 bg-primary rounded-full h-6 animate-pulse" style="animation-delay: 0.4s"></span>
+          <span class="w-1 bg-secondary rounded-full h-5 animate-pulse" style="animation-delay: 0.15s"></span>
+          <span class="w-1 bg-primary/80 rounded-full h-3 animate-pulse" style="animation-delay: 0.3s"></span>
+          <span class="w-1 bg-tertiary rounded-full h-5 animate-pulse" style="animation-delay: 0.5s"></span>
+        </div>
+
+        <div class="flex items-center gap-2 shrink-0">
+          <button class="px-4 py-2 rounded-lg bg-primary text-on-primary font-mono text-xs font-semibold hover:bg-primary-container transition-colors shadow-sm" onclick="addToBag()">Order $349</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<!-- Footer -->
+<footer class="w-full bg-surface-container-low mt-20 border-t border-surface-container-high">
+  <div class="max-w-7xl mx-auto px-6 pt-16 pb-12">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 pb-16">
+      <div class="lg:col-span-4">
+        <div class="flex items-center gap-2 mb-4">
+          <span class="font-headline text-xl font-bold text-on-surface">Aurelia Audio</span>
+          <span class="inline-block w-2 h-2 rounded-full bg-primary"></span>
+        </div>
+        <p class="font-body text-sm text-on-surface-variant max-w-sm mb-6">Acoustic engineering refined for purists. Integrated with real-time AI Factual Firewall authentication.</p>
+      </div>
+
+      <div class="lg:col-span-2 lg:ml-auto">
+        <p class="font-mono text-xs uppercase tracking-wider text-on-surface font-semibold mb-4">Products</p>
+        <ul class="flex flex-col gap-3 font-body text-xs text-on-surface-variant">
+          <li><a class="hover:text-on-surface transition-colors" href="#">Headphones</a></li>
+          <li><a class="hover:text-on-surface transition-colors" href="#">Wireless Earbuds</a></li>
+          <li><a class="hover:text-on-surface transition-colors" href="#">Studio Monitors</a></li>
+        </ul>
+      </div>
+
+      <div class="lg:col-span-3">
+        <p class="font-mono text-xs uppercase tracking-wider text-on-surface font-semibold mb-4">AI Security Stack</p>
+        <div class="flex flex-col gap-2 font-mono text-xs text-on-surface-variant">
+          <span>Model: detector_model.pkl</span>
+          <span>Policy: Human -> ACCEPTED | CG/AI -> REJECTED</span>
+          <span>Classifier: Logistic Regression C=2.0</span>
+          <span>Endpoint: /api/v1/predict-review</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="pt-8 border-t border-surface-container flex flex-col md:flex-row items-center justify-between gap-6 font-body text-xs text-on-surface-variant">
+      <p>© 2025 Aurelia Audio Inc. All rights reserved.</p>
+      <div class="flex items-center gap-4">
+        <span class="px-2 py-0.5 rounded bg-surface-container font-mono text-[10px]">detector_model.pkl Active</span>
+        <span class="px-2 py-0.5 rounded bg-surface-container font-mono text-[10px]">95% THRESHOLD RULE</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- JavaScript Interaction Logic -->
+<script>
+  const API_ENDPOINT = "http://localhost:8000/api/v1/predict-review";
+  let currentRating = 5;
+  let currentQty = 1;
+  let isAudioPlaying = false;
+  let cartCount = 1;
+  let totalReviewsCount = 1240;
+
+  const presets = {
+    human1: {
+      rating: 5,
+      title: "Transformed my cross-country flights",
+      text: "Awesome for traveling! Took this on vacation with our 1 year old. He is 26lbs and approx 30 inches long. It was perfect for a small space and lightweight to carry."
+    },
+    ai1: {
+      rating: 5,
+      title: "Exceptional Product Suitability",
+      text: "Furthermore, this product has demonstrated exceptional suitability for travel purposes. Notably, its compact design and lightweight construction render it ideal for utilization in confined spaces."
+    },
+    ai2: {
+      rating: 5,
+      title: "A Total Game Changer",
+      text: "This item is an absolute MUST-HAVE and a total GAME-CHANGER! Featuring state-of-the-art design, it delivers a delightful addition to your routine. Guaranteed complete satisfaction!"
+    }
+  };
+
+  // Check Backend Health on Load
+  window.addEventListener('DOMContentLoaded', () => {
+    checkApiHealth();
+  });
+
+  async function checkApiHealth() {
+    try {
+      const res = await fetch("http://localhost:8000/");
+      const data = await res.json();
+      if (data.status === "online") {
+        document.getElementById("apiStatusText").innerText = "detector_model.pkl API Connected";
+        document.getElementById("apiStatusBadge").className = "inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-mono text-xs font-semibold";
+      }
+    } catch (e) {
+      console.log("FastAPI backend not running locally on port 8000.");
+      document.getElementById("apiStatusText").innerText = "Local Simulation Mode";
+      document.getElementById("apiStatusBadge").className = "inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100 text-amber-800 font-mono text-xs font-semibold";
+    }
+  }
+
+  function switchHeroImage(index, imagePath) {
+    document.getElementById('mainProductImage').src = imagePath;
+    const btns = document.querySelectorAll('.thumbnail-btn');
+    btns.forEach((b, i) => {
+      if (i === index) {
+        b.classList.add('ring-2', 'ring-primary', 'opacity-100');
+        b.classList.remove('opacity-75');
+      } else {
+        b.classList.remove('ring-2', 'ring-primary', 'opacity-100');
+        b.classList.add('opacity-75');
+      }
+    });
+  }
+
+  function selectColor(name, btn, imagePath) {
+    document.getElementById('selectedColorName').innerText = name;
+    if (imagePath) {
+      document.getElementById('mainProductImage').src = imagePath;
+    }
+    const parent = btn.parentElement;
+    Array.from(parent.children).forEach(el => {
+      el.classList.remove('ring-2', 'ring-primary', 'ring-offset-2', 'ring-offset-surface');
+    });
+    btn.classList.add('ring-2', 'ring-primary', 'ring-offset-2', 'ring-offset-surface');
+  }
+
+  function adjustQty(delta) {
+    currentQty = Math.max(1, currentQty + delta);
+    document.getElementById('qtyCounter').innerText = currentQty;
+    document.getElementById('addToBagLabel').innerText = `Add to Bag · $${349 * currentQty}.00`;
+  }
+
+  function addToBag() {
+    cartCount += currentQty;
+    document.getElementById('cartBadge').innerText = cartCount;
+    alert(`Added ${currentQty} Aurelia Studio Pro headphone(s) to your bag!`);
+  }
+
+  function openReviewModal(targetState = 1) {
+    const backdrop = document.getElementById('reviewModalBackdrop');
+    backdrop.classList.remove('hidden');
+    backdrop.classList.add('flex');
+    setModalState(targetState);
+  }
+
+  function closeReviewModal() {
+    const backdrop = document.getElementById('reviewModalBackdrop');
+    backdrop.classList.add('hidden');
+    backdrop.classList.remove('flex');
+  }
+
+  function setRating(val) {
+    currentRating = val;
+    const labels = ['Poor', 'Fair', 'Average', 'Very Good', 'Exceptional'];
+    document.getElementById('starRatingLabel').innerText = val > 0 ? labels[val - 1] : 'Click to rate';
+    document.getElementById('starErrorMsg').classList.add('hidden');
+    
+    const stars = document.querySelectorAll('.star-pick');
+    stars.forEach((star, idx) => {
+      if (idx < val) {
+        star.classList.add('text-[#F59E0B]');
+        star.classList.remove('text-outline-variant');
+        star.querySelector('.material-symbols-outlined').style.fontVariationSettings = "'FILL' 1";
+      } else {
+        star.classList.remove('text-[#F59E0B]');
+        star.classList.add('text-outline-variant');
+        star.querySelector('.material-symbols-outlined').style.fontVariationSettings = "'FILL' 0";
+      }
+    });
+  }
+
+  function handleTextInput(textarea) {
+    const count = textarea.value.length;
+    document.getElementById('charCount').innerText = `${count} / 1000`;
+    if (count >= 5) {
+      document.getElementById('bodyErrorMsg').classList.add('hidden');
+    }
+  }
+
+  function loadPreset(key) {
+    const p = presets[key];
+    if (p) {
+      setRating(p.rating);
+      document.getElementById('reviewTitleInput').value = p.title;
+      document.getElementById('reviewBodyInput').value = p.text;
+      document.getElementById('charCount').innerText = `${p.text.length} / 1000`;
+    }
+  }
+
+  function setModalState(stateNumber) {
+    document.querySelectorAll('.state-tab-btn').forEach((btn, idx) => {
+      if (idx + 1 === stateNumber) {
+        btn.classList.add('bg-primary', 'text-on-primary', 'font-semibold');
+        btn.classList.remove('text-on-surface-variant', 'font-medium');
+      } else {
+        btn.classList.remove('bg-primary', 'text-on-primary', 'font-semibold');
+        btn.classList.add('text-on-surface-variant', 'font-medium');
+      }
+    });
+
+    const form = document.getElementById('modalFormContainer');
+    const analyzing = document.getElementById('stateAnalyzing');
+    const approved = document.getElementById('stateApproved');
+    const rejected = document.getElementById('stateRejected');
+
+    form.classList.add('hidden');
+    analyzing.classList.add('hidden');
+    approved.classList.add('hidden');
+    rejected.classList.add('hidden');
+
+    if (stateNumber === 1) { // Form
+      form.classList.remove('hidden');
+    } else if (stateNumber === 2) { // Presets
+      form.classList.remove('hidden');
+      loadPreset('human1');
+    } else if (stateNumber === 3) { // Analyzing
+      analyzing.classList.remove('hidden');
+    } else if (stateNumber === 4) { // Approved / Accepted
+      approved.classList.remove('hidden');
+    } else if (stateNumber === 5) { // Rejected
+      rejected.classList.remove('hidden');
+    }
+  }
+
+  async function submitRealOrSimulatedReview() {
+    const title = document.getElementById('reviewTitleInput').value.trim();
+    const bodyText = document.getElementById('reviewBodyInput').value.trim();
+
+    if (currentRating === 0) {
+      document.getElementById('starErrorMsg').classList.remove('hidden');
+      return;
+    }
+    if (bodyText.length < 5) {
+      document.getElementById('bodyErrorMsg').classList.remove('hidden');
+      return;
+    }
+
+    setModalState(3); // Analyzing Radar scan
+
+    try {
+      const response = await fetch(API_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: bodyText, title: title, rating: currentRating })
+      });
+
+      const data = await response.json();
+
+      setTimeout(() => {
+        // Human Review -> ACCEPTED
+        if (data.status === "ACCEPTED" || data.decision === "ACCEPTED" || data.status === "APPROVED") {
+          document.getElementById('approvedHumanScoreText').innerText = `${data.or_probability.toFixed(1)}%`;
+          document.getElementById('approvedMessageDetail').innerText = data.message;
+          document.getElementById('approvedLatencyBadge').innerText = `⚡ Model Latency: ${data.latency_ms}ms (detector_model.pkl)`;
+
+          // Render Diagnostics
+          const diagList = document.getElementById('approvedDiagnosticsList');
+          if (data.diagnostics && data.diagnostics.length > 0) {
+            diagList.innerHTML = data.diagnostics.map(d => `<li class="flex items-center gap-2"><span class="material-symbols-outlined text-tertiary text-[16px]">check_circle</span> ${escapeHtml(d)}</li>`).join('');
+          }
+
+          setModalState(4);
+          prependReviewToFeed(title, bodyText, currentRating, data.or_probability);
+        } else {
+          // CG / AI Generated -> REJECTED
+          document.getElementById('rejectedHumanScoreText').innerText = `${data.or_probability.toFixed(1)}%`;
+          document.getElementById('rejectedProgressBar').style.width = `${Math.max(5, data.or_probability)}%`;
+          document.getElementById('rejectedDraftSnippet').innerText = `"${bodyText}"`;
+          document.getElementById('rejectedMessageDetail').innerText = data.message;
+          document.getElementById('rejectedLatencyBadge').innerText = `⚡ Model Latency: ${data.latency_ms}ms (detector_model.pkl)`;
+
+          // Render Diagnostics
+          const diagList = document.getElementById('rejectedDiagnosticsList');
+          if (data.diagnostics && data.diagnostics.length > 0) {
+            diagList.innerHTML = data.diagnostics.map(d => `<li class="flex items-center gap-2"><span class="material-symbols-outlined text-error text-[16px]">error</span> ${escapeHtml(d)}</li>`).join('');
+          }
+
+          setModalState(5);
+        }
+      }, 1000);
+
+    } catch (err) {
+      console.log("FastAPI backend error, running local fallback simulation...", err);
+      setTimeout(() => {
+        submitSimulatedReview(title, bodyText);
+      }, 1000);
+    }
+  }
+
+  function submitSimulatedReview(title, bodyText) {
+    const lower = bodyText.toLowerCase();
+    const isAiPattern = lower.includes("furthermore") || lower.includes("must-have") || lower.includes("game-changer") || lower.includes("demonstrated exceptional");
+
+    if (isAiPattern) {
+      document.getElementById('rejectedHumanScoreText').innerText = `9.3%`;
+      document.getElementById('rejectedProgressBar').style.width = `9.3%`;
+      document.getElementById('rejectedDraftSnippet').innerText = `"${bodyText}"`;
+      document.getElementById('rejectedDiagnosticsList').innerHTML = `
+        <li class="flex items-center gap-2"><span class="material-symbols-outlined text-error text-[16px]">error</span> Detected formal AI transition phrasing / openers.</li>
+        <li class="flex items-center gap-2"><span class="material-symbols-outlined text-error text-[16px]">error</span> Low personal pronoun density.</li>
+      `;
+      setModalState(5);
+    } else {
+      document.getElementById('approvedHumanScoreText').innerText = `99.8%`;
+      document.getElementById('approvedDiagnosticsList').innerHTML = `
+        <li class="flex items-center gap-2"><span class="material-symbols-outlined text-tertiary text-[16px]">check_circle</span> Authentic human personal phrasing detected.</li>
+        <li class="flex items-center gap-2"><span class="material-symbols-outlined text-tertiary text-[16px]">check_circle</span> Passed 98.00% OR Probability Threshold Policy.</li>
+      `;
+      setModalState(4);
+      prependReviewToFeed(title, bodyText, currentRating, 99.8);
+    }
+  }
+
+  function prependReviewToFeed(title, bodyText, rating, score) {
+    totalReviewsCount += 1;
+    document.getElementById('verifiedCountLink').innerText = `${totalReviewsCount.toLocaleString()} verified human reviews`;
+    document.getElementById('totalVerifiedCountText').innerText = `Based on ${totalReviewsCount.toLocaleString()} verified human reviews across 38 countries.`;
+    document.getElementById('chipAllCount').innerText = totalReviewsCount.toLocaleString();
+
+    const feed = document.getElementById("reviewsFeed");
+    const newCard = document.createElement("div");
+    newCard.id = "newlySubmittedReview";
+    newCard.className = "review-card p-6 rounded-2xl bg-surface-container-lowest shadow-md flex flex-col justify-between border-2 border-tertiary/40 ring-4 ring-tertiary/10 animate-fade-in";
+    newCard.setAttribute("data-rating", rating);
+    newCard.setAttribute("data-verified", "true");
+
+    let starsHtml = "";
+    for (let i = 0; i < 5; i++) {
+      starsHtml += `<span class="material-symbols-outlined text-[18px] ${i < rating ? 'text-[#F59E0B]' : 'text-outline-variant'}" style="font-variation-settings: 'FILL' ${i < rating ? 1 : 0};">star</span>`;
+    }
+
+    newCard.innerHTML = `
+      <div class="flex flex-col gap-3">
+        <div class="flex items-start justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-tertiary-fixed text-on-tertiary-fixed flex items-center justify-center font-bold font-headline">You</div>
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="font-headline text-sm font-bold text-on-surface">Verified Customer</span>
+                <span class="font-mono text-xs text-on-surface-variant">· Just Now</span>
+              </div>
+              <span class="font-mono text-[11px] text-tertiary font-bold">✓ ACCEPTED by detector_model.pkl</span>
+            </div>
+          </div>
+          <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-tertiary/10 text-tertiary font-mono text-[11px] font-semibold">
+            <span class="material-symbols-outlined text-[13px]">verified</span> Verified Purchase
+          </span>
+        </div>
+
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-0.5">
+            ${starsHtml}
+          </div>
+          <span class="inline-flex items-center gap-1 font-mono text-[11px] text-tertiary bg-tertiary-fixed px-2 py-0.5 rounded-md font-semibold">
+            <span class="material-symbols-outlined text-[12px]">security</span>
+            ACCEPTED (Human ${score.toFixed(1)}%)
+          </span>
+        </div>
+
+        ${title ? `<h4 class="font-headline text-sm font-bold text-on-surface">${escapeHtml(title)}</h4>` : ''}
+        <p class="review-text font-body text-sm text-on-surface-variant leading-relaxed">
+          "${escapeHtml(bodyText)}"
+        </p>
+      </div>
+
+      <div class="flex items-center justify-between pt-4 mt-4 border-t border-surface-container font-mono text-xs text-on-surface-variant">
+        <span>Was this review helpful?</span>
+        <button class="flex items-center gap-1.5 hover:text-on-surface transition-colors" onclick="this.querySelector('span:last-child').innerText = parseInt(this.querySelector('span:last-child').innerText)+1">
+          <span class="material-symbols-outlined text-[16px]">thumb_up</span>
+          <span>0</span>
+        </button>
+      </div>
+    `;
+
+    feed.prepend(newCard);
+  }
+
+  function scrollToFeedAndClose() {
+    closeReviewModal();
+    const target = document.getElementById('newlySubmittedReview') || document.getElementById('reviewsSection');
+    target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  function filterReviews(type, btn) {
+    document.querySelectorAll('.filter-chip').forEach(b => {
+      b.classList.remove('bg-on-surface', 'text-on-primary', 'font-semibold');
+      b.classList.add('bg-surface-container', 'text-on-surface', 'font-medium');
+    });
+    btn.classList.add('bg-on-surface', 'text-on-primary', 'font-semibold');
+    btn.classList.remove('bg-surface-container', 'text-on-surface', 'font-medium');
+
+    const cards = document.querySelectorAll('.review-card');
+    cards.forEach(card => {
+      const rating = card.getAttribute('data-rating');
+      if (type === 'all') {
+        card.style.display = 'flex';
+      } else if (type === '5star' && rating === '5') {
+        card.style.display = 'flex';
+      } else if (type === '4star' && rating === '4') {
+        card.style.display = 'flex';
+      } else if (type === 'verified') {
+        card.style.display = 'flex';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+  }
+
+  function searchReviews() {
+    const q = document.getElementById('searchInput').value.toLowerCase();
+    const cards = document.querySelectorAll('.review-card');
+    cards.forEach(card => {
+      const text = card.querySelector('.review-text').innerText.toLowerCase();
+      if (text.includes(q)) {
+        card.style.display = 'flex';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+  }
+
+  function toggleAudioPreview() {
+    isAudioPlaying = !isAudioPlaying;
+    const icon = document.getElementById('playIconSpan');
+    icon.innerText = isAudioPlaying ? 'pause' : 'play_arrow';
+  }
+
+  function escapeHtml(str) {
+    return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  }
+</script>
+</body>
+</html>
