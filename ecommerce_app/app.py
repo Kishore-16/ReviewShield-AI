@@ -117,14 +117,23 @@ def evaluate_review(payload: ReviewRequest):
     try:
         combined_text = f"{payload.title} {payload.text}".strip() if payload.title else payload.text
         
-        # Pass text directly to trained detector_model.pkl
-        res = predictor.predict(combined_text)
+        # Pass text to predictor (with optional Hugging Face online fallback enabled)
+        res = predictor.predict(combined_text, use_online_if_available=True)
         latency = round((time.time() - t0) * 1000, 2)
         
         # Human Review (prediction == 0) -> ACCEPTED
         # CG / AI Generated (prediction == 1) -> REJECTED
         is_accepted = (res['prediction'] == 0)
         diag = extract_diagnostics(combined_text, is_accepted, threshold=res.get('threshold', 98.00))
+
+        # Append HuggingFace Online Detection feedback if online inference took place
+        hf_online_info = res.get('hf_online', {})
+        if hf_online_info.get('status') == 'success':
+            diag.append(f"Hugging Face RoBERTa API Verification: {hf_online_info.get('human_confidence')}% Human / {hf_online_info.get('ai_confidence')}% AI.")
+        elif hf_online_info.get('status') == 'skipped':
+            diag.append("Online Inference: Off (HF_TOKEN not set; local model active).")
+
+        checkpoint_name = "detector_model.pkl + HF RoBERTa API" if hf_online_info.get('status') == 'success' else "detector_model.pkl"
 
         if is_accepted:
             return ReviewResponse(
@@ -136,7 +145,7 @@ def evaluate_review(payload: ReviewRequest):
                 or_probability=round(res['or_probability'], 2),
                 cg_probability=round(res['cg_probability'], 2),
                 latency_ms=latency,
-                checkpoint_file="detector_model.pkl",
+                checkpoint_file=checkpoint_name,
                 message="Review ACCEPTED: Verified as authentic human customer review.",
                 diagnostics=diag
             )
@@ -150,7 +159,7 @@ def evaluate_review(payload: ReviewRequest):
                 or_probability=round(res['or_probability'], 2),
                 cg_probability=round(res['cg_probability'], 2),
                 latency_ms=latency,
-                checkpoint_file="detector_model.pkl",
+                checkpoint_file=checkpoint_name,
                 message="Review REJECTED: Deceptive Computer-Generated / AI writing pattern detected.",
                 diagnostics=diag
             )
